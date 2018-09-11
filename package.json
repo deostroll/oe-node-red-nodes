@@ -37,7 +37,9 @@
   "author": "Ajith Vasudevan",
   "license": "MIT",
   "devDependencies": {
+     
   },
   "dependencies": {
+    "async" : "^2.6.1"
   }
 }
