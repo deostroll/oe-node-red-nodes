@@ -1,0 +1,32 @@
+<!-- 
+ ©2016 EdgeVerve Systems Limited (a fully owned Infosys subsidiary),
+ Bangalore, India. All Rights Reserved.
+  -->
+
+<script type="text/javascript">
+    RED.nodes.registerType('sync-observer-end', {
+        category : 'output',
+        color : '#F2F5A9',
+        defaults : {
+            name : {
+                value : ""
+            }
+        },
+        inputs : 1,
+        outputs : 0,
+        icon : "oeCloudLogo.svg",
+        label : function() {
+            return this.name || "sync-observer-end";
+        }
+    });
+</script>
+<script type="text/x-red" data-template-name="sync-observer-end">
+	<div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="sync-observer-end">
+    <p>Ends observer.</p>
+</script>

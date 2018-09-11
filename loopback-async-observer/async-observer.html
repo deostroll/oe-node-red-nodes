@@ -1,0 +1,72 @@
+<!-- 
+ ©2016-2017 EdgeVerve Systems Limited (a fully owned Infosys subsidiary),
+ Bangalore, India. All Rights Reserved.
+  -->
+<script type="text/javascript">
+    RED.nodes.registerType('async-observer', {
+        category : 'input',
+        color : '#81F7F3',
+        defaults : {
+            name : {
+                value : ""
+            },
+            modelname : {
+                value : "",required:true,validate: RED.validators.regex(/^(#$|(\+|[^+#]*)(\/(\+|[^+#]*))*(\/(\+|#|[^+#]*))?$)/)
+            },
+            method : {
+                value : "",required:true,validate: function(){return function(v) { return v.trim() !== '';}}
+            }
+        },
+        inputs : 0,
+        outputs : 1,
+        icon : "oeCloudLogo.svg",
+        label : function() {
+            return this.name || "async-observer";
+        },
+        oneditprepare : function() {
+            $("#node-input-modelname").click(function() {
+                console.log(RED);
+                $("#node-input-modelname").addClass('disabled');
+                $.getJSON('http://localhost:' + RED.settings.editorTheme.projects.appPort + '/api/ModelDefinitions?filter[order]=clientModelName',function(data) {
+                    $("#node-input-modelname").removeClass('disabled');
+                    var modelNames = data.map(function(m) {return m.clientModelName});
+                    $("#node-input-modelname").autocomplete({
+                        source:modelNames,
+                        minLength:0,
+                        close: function( event, ui ) {
+                            $("#node-input-modelname").autocomplete( "destroy" );
+                        }
+                    }).autocomplete("search","");
+                });
+            });
+        }
+    });
+</script>
+<script type="text/x-red" data-template-name="async-observer">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-modelname"><i class="icon-tag"></i> Model Name</label>
+        <input type="text" id="node-input-modelname" placeholder="Model Name">
+        <!--<select id="node-input-modelname">
+            <option value="">Select Model</option>
+        </select>-->
+    </div>
+    <div class="form-row">
+        <label for="node-input-method"><i class="icon-tag"></i> Method</label>
+        <!--<input type="select" id="node-input-method" placeholder="Method">-->
+        <select id="node-input-method">
+            <option value="access">access</option>
+			<option value="after access">after access</option>
+            <option value="before save">before save</option>
+            <option value="after save">after save</option>
+            <option value="composite loaded">composite loaded</option>
+        </select>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="async-observer">
+    <p>Node that observes loopback operations in an asynchronous manner. It does not wait for node flow to complete and returns control to loopback app instantly by calling next() callback.</p>
+</script>
