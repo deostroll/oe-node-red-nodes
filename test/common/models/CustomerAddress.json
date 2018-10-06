@@ -1,0 +1,14 @@
+{
+  "name": "CustomerAddress",
+  "base": "BaseEntity",
+  "idInjection": true,
+  "properties": {
+    "city": {
+      "type": "string"
+	}
+  },
+  "validations": [],
+  "acls": [],
+  "methods": {}
+}
+

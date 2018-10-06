@@ -1,0 +1,26 @@
+{
+  "name": "Customer",
+  "base": "BaseEntity",
+  "idInjection": true,
+  "properties": {
+    "name": {
+      "type": "string",
+      "unique": true
+    },
+    "age": {
+      "type": "number"
+    }
+  },
+  "validations": [],
+  "acls": [],
+  "relations": {
+    "address": {
+      "type": "hasMany",
+      "model": "CustomerAddress",
+      "foreignKey": "CustomerId"
+    }
+  },
+  "methods": {}
+
+}
+

@@ -1,45 +1,36 @@
 /**
- * 
+ *
  * ©2016 EdgeVerve Systems Limited (a fully owned Infosys subsidiary),
  * Bangalore, India. All Rights Reserved.
- * 
+ *
  */
 var loopback = require('loopback');
-var _ = require('lodash');
-var utils = require('../common/utils');
-var http = require("follow-redirects").http;
-var https = require("follow-redirects").https;
-var urllib = require("url");
-var mustache = require("mustache");
-var querystring = require("querystring");
 
-module.exports = function(RED) {
+module.exports = function (RED) {
   function ExecuteRemoteMethod(config) {
     RED.nodes.createNode(this, config);
     var node = this;
-    
 
-    
+
     node.enabled = true;
     var _node = this;
-    
-   
+
+
     this.on('input', function (msg) {
       var data = config.data;
       var modelName = config.modelname;
       var methodname = config.methodname;
-      
+
       var usecontext = config.usecontext;
       var contextposition = config.contextposition;
       var waitForCallback = config.callback;
       if (typeof contextposition === 'string') {
-        contextposition = parseInt(contextposition);
+        contextposition = parseInt(contextposition, 10);
       }
-      if (contextposition < 0)
-        contextposition = 0;
+      if (contextposition < 0) {contextposition = 0;}
 
-      node.status({ fill: "blue", shape: "dot", text: "calling remote method" });
-      
+      node.status({ fill: 'blue', shape: 'dot', text: 'calling remote method' });
+
       if (msg && msg.executeRemoteMethod && msg.executeRemoteMethod.modelName) {
         modelName = msg.executeRemoteMethod.modelName;
       }
@@ -49,28 +40,24 @@ module.exports = function(RED) {
       if (msg && msg.executeRemoteMethod && msg.executeRemoteMethod.methodname) {
         methodname = msg.executeRemoteMethod.methodname;
       }
-      debugger;
+
       var model = loopback.findModel(modelName, node.callContext);
-      
+
       if (!model) {
         _node.status({
-          "fill": "red",
-          "shape": "ring",
-          "text": "An error occurred - model " + modelName + " not found."
+          'fill': 'red',
+          'shape': 'ring',
+          'text': 'An error occurred - model ' + modelName + ' not found.'
         });
-        node.error(e.toString(), "Node red error " + modelName + " not found.");
-        msg.payload = "Node RED ERROR - " + modelName + " not found.";
+        node.error('Error', 'Node red error ' + modelName + ' not found.');
+        msg.payload = 'Node RED ERROR - ' + modelName + ' not found.';
         node.send(msg);
         return;
       }
-      var url;
-      var opts = null;
-      
-      var payload;
       if (data) {
         data = JSON.parse(data);
       }
-      data = (msg && msg.executeRemoteMethod && msg.executeRemoteMethod.payload) || data ;
+      data = (msg && msg.executeRemoteMethod && msg.executeRemoteMethod.payload) || data;
       if (data && !Array.isArray(data)) {
         data = [data];
       }
@@ -90,7 +77,7 @@ module.exports = function(RED) {
           node.status({});
         });
       }
-      
+
       var remoteMethod = model[methodname];
       var returnValue = remoteMethod.apply(model, data);
 
@@ -100,12 +87,12 @@ module.exports = function(RED) {
         _node.send(msg);
       }
     });
-    
+
     node.on('close', function () {
       node.status({});
       node.enabled = false;
     });
   }
-  
-  RED.nodes.registerType("execute-remote-method", ExecuteRemoteMethod);
-}
+
+  RED.nodes.registerType('execute-remote-method', ExecuteRemoteMethod);
+};
