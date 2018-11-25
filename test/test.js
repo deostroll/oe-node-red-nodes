@@ -10,12 +10,11 @@ var oecloud = require('oe-cloud');
 var loopback = require('loopback');
 
 oecloud.observe('loaded', function (ctx, next) {
+  // oecloud.attachMixinsToBaseEntity("MultiTenancyMixin");
+  oecloud.setBaseEntityAutoscope(['tenantId']);
   return next();
-})
+});
 
-// oecloud.addContextField('tenantId', {
-//   type: "string"
-// });
 
 var Customer;
 oecloud.boot(__dirname, function (err) {
@@ -24,34 +23,32 @@ oecloud.boot(__dirname, function (err) {
     process.exit(1);
   }
   var accessToken = loopback.findModel('AccessToken');
-  accessToken.observe("before save", function (ctx, next) {
-    var userModel = loopback.findModel("User");
+  accessToken.observe('before save', function (ctx, next) {
+    var userModel = loopback.findModel('User');
     var instance = ctx.instance;
     userModel.find({ where: { id: instance.userId } }, {}, function (err, result) {
       if (err) {
         return next(err);
       }
       if (result.length != 1) {
-        return next(new Error("No User Found"));
+        return next(new Error('No User Found'));
       }
       var user = result[0];
-      if (user.username === "admin") {
-        instance.tenantId = '/default';
+      instance.ctx = instance.ctx || {};
+      if (user.username === 'admin') {
+        instance.ctx.tenantId = '/default';
+      } else if (user.username === 'iciciuser') {
+        instance.ctx.tenantId = '/default/iciciuser';
+      } else if (user.username === 'citiuser') {
+        instance.ctx.tenantId = '/default/citi';
       }
-      else if (user.username === "iciciuser") {
-        instance.tenantId = '/default/icici';
-      }
-      else if (user.username === "citiuser") {
-        instance.tenantId = '/default/citi';
-      }
+
       return next(err);
     });
   });
   oecloud.start();
   oecloud.emit('test-start');
 });
-
-
 
 
 var chalk = require('chalk');
@@ -68,7 +65,7 @@ var api = defaults(supertest(app));
 var basePath = app.get('restApiRoot');
 
 function deleteAllUsers(done) {
-  var userModel = loopback.findModel("User");
+  var userModel = loopback.findModel('User');
   userModel.destroyAll({}, {}, function (err) {
     return done(err);
   });
@@ -97,7 +94,7 @@ describe(chalk.blue('oe-node-red-nodes Started'), function (done) {
   this.timeout(10000);
   before('wait for boot scripts to complete', function (done) {
     app.on('test-start', function () {
-      Customer = loopback.findModel("Customer");
+      Customer = loopback.findModel('Customer');
       deleteAllUsers(function (err) {
         return done(err);
       });
@@ -112,12 +109,11 @@ describe(chalk.blue('oe-node-red-nodes Started'), function (done) {
     var url = basePath + '/users';
     api.set('Accept', 'application/json')
       .post(url)
-      .send([{ username: "admin", password: "admin", email: "admin@admin.com" },
-      { username: "iciciuser", password: "iciciuser", email: "iciciuser@iciciuser.com" },
-      { username: "citiuser", password: "citiuser", email: "citiuser@citiuser.com" }
+      .send([{ username: 'admin', password: 'admin', email: 'admin@admin.com' },
+        { username: 'iciciuser', password: 'iciciuser', email: 'iciciuser@iciciuser.com' },
+        { username: 'citiuser', password: 'citiuser', email: 'citiuser@citiuser.com' }
       ])
       .end(function (err, response) {
-
         var result = response.body;
         expect(result[0].id).to.be.defined;
         expect(result[1].id).to.be.defined;
@@ -131,7 +127,7 @@ describe(chalk.blue('oe-node-red-nodes Started'), function (done) {
     var url = basePath + '/users/login';
     api.set('Accept', 'application/json')
       .post(url)
-      .send({ username: "admin", password: "admin" })
+      .send({ username: 'admin', password: 'admin' })
       .end(function (err, response) {
         var result = response.body;
         adminToken = result.id;
@@ -145,7 +141,7 @@ describe(chalk.blue('oe-node-red-nodes Started'), function (done) {
     var url = basePath + '/users/login';
     api.set('Accept', 'application/json')
       .post(url)
-      .send({ username: "iciciuser", password: "iciciuser" })
+      .send({ username: 'iciciuser', password: 'iciciuser' })
       .end(function (err, response) {
         var result = response.body;
         icicitoken = result.id;
@@ -160,7 +156,7 @@ describe(chalk.blue('oe-node-red-nodes Started'), function (done) {
     var url = basePath + '/users/login';
     api.set('Accept', 'application/json')
       .post(url)
-      .send({ username: "citiuser", password: "citiuser" })
+      .send({ username: 'citiuser', password: 'citiuser' })
       .end(function (err, response) {
         var result = response.body;
         cititoken = result.id;
@@ -170,116 +166,44 @@ describe(chalk.blue('oe-node-red-nodes Started'), function (done) {
   });
 
 
-  it("t5 - creating default record in Customer model", function (done) {
-    Customer.create({ name: "A", age: 10 }, defaultContext, function (err, r) {
+  it('t5 - creating default record in Customer model', function (done) {
+    Customer.create({ name: 'A', age: 10 }, defaultContext, function (err, r) {
       return done(err);
     });
   });
 
-  it("t6 - creating icici record in Customer model", function (done) {
-    Customer.create({ name: "Icici", age: 10 }, iciciCtx, function (err, r) {
+  it('t6 - creating icici record in Customer model', function (done) {
+    Customer.create({ name: 'Icici', age: 10 }, iciciCtx, function (err, r) {
       return done(err);
     });
   });
 
-  it("t7 - creating citi record in Customer model", function (done) {
-    Customer.create({ name: "citi", age: 10 }, citiCtx, function (err, r) {
+  it('t7 - creating citi record in Customer model', function (done) {
+    Customer.create({ name: 'citi', age: 10 }, citiCtx, function (err, r) {
       return done(err);
     });
   });
 
-  it("t8.1 - fetching records as default tenant", function (done) {
-    api
-      .set('Accept', 'application/json')
-      .get(basePath + '/Customers?access_token=' + adminToken)
-      .send()
-      .expect(200).end(function (err, res) {
-        //console.log('response body : ' + JSON.stringify(res.body, null, 4));
-        if (err || res.body.error) {
-          return done(err || (new Error(res.body.error)));
-        }
-        var results = res.body;
+  it('Node-Red Test - Should able to create node red flow', function (done) {
+    var flows = [{ 'id': '5b4e055c.3134cc', 'type': 'tab', 'label': 'node-red-test-tenant' },
+      { 'id': 'f2978c55.016ab', 'type': 'async-observer', 'z': '5b4e055c.3134cc', 'name': 'node-red-test-tenant', 'modelname': 'Customer', 'method': 'access', 'x': 162, 'y': 191, 'wires': [['f5c48f2.d0e007']] },
+      { 'id': 'f5c48f2.d0e007', 'type': 'function', 'z': '5b4e055c.3134cc', 'name': 'node-red-test-tenant', 'func': "console.log('******* test-tenant ********');\nvar loopback = global.get('loopback');\nvar customerModel = loopback.findModel('" + 'Customer' + "');\ncustomerModel.emit(\"notifyCustomer\", msg.callContext);\n\nreturn msg;", 'outputs': 1, 'noerr': 0, 'x': 439, 'y': 165, 'wires': [['9a0d6af6.7e8ec8']] },
+      { 'id': '9a0d6af6.7e8ec8', 'type': 'debug', 'z': '5b4e055c.3134cc', 'name': 'node-red-test-tenant', 'active': true, 'console': 'false', 'complete': 'true', 'x': 661, 'y': 147, 'wires': [] }];
 
-
+    // console.log(accessToken);
+    // var postUrl = '/red' + '/flows?access_token=' + adminToken;
+    var postUrl = '/red/flows?';
+    api.set('Accept', 'application/json')
+      .post(postUrl)
+      .set('X-Access-Token', adminToken)
+      .set('Node-RED-API-Version', 'v2')
+      .send({flows})
+      .end(function (err, resp) {
+        if ( err ) return done(err);
+        expect(resp.status).to.be.equal(200);
         done();
       });
   });
-  it("t8.2 - fetching records as icici tenant", function (done) {
-    api
-      .set('Accept', 'application/json')
-      .get(basePath + '/Customers?access_token=' + icicitoken)
-      .send()
-      .expect(200).end(function (err, res) {
-        //console.log('response body : ' + JSON.stringify(res.body, null, 4));
-        if (err || res.body.error) {
-          return done(err || (new Error(res.body.error)));
-        }
-        var results = res.body;
-
-        done();
-      });
-  });
-
-  it("t8.3 - fetching records as citi tenant", function (done) {
-    api
-      .set('Accept', 'application/json')
-      .get(basePath + '/Customers?access_token=' + cititoken)
-      .send()
-      .expect(200).end(function (err, res) {
-        //console.log('response body : ' + JSON.stringify(res.body, null, 4));
-        if (err || res.body.error) {
-          return done(err || (new Error(res.body.error)));
-        }
-        var results = res.body;
-
-        done();
-      });
-  });
-
-  it("t11.2 - Create employee record by posting into Employee model as icici user - should go into personalized appdb", function (done) {
-    var data = {
-      name: "IciciEmployee2",
-      age: 10
-    };
-    api
-      .set('Accept', 'application/json')
-      .post(basePath + '/Employees' + '?access_token=' + icicitoken)
-      .send(data)
-      .expect(200).end(function (err, res) {
-        if (err || res.body.error) {
-          return done(err || (new Error(res.body.error)));
-        }
-        done();
-      });
-  });
-
-  it("t11.2 - fetching Employee records as icici tenant - only record which went to personalized appdb database should be retrieved", function (done) {
-    var employeeModel = loopback.findModel("Employee");
-    employeeModel.find({}, iciciCtx, function (err, results) {
-
-      done();
-    });
-  });
-
-
-  it("t11.3 - fetching Employee records as icici tenant(HTTP)", function (done) {
-    api
-      .set('Accept', 'application/json')
-      .get(basePath + '/Employees?access_token=' + icicitoken)
-      .send()
-      .expect(200).end(function (err, res) {
-        //console.log('response body : ' + JSON.stringify(res.body, null, 4));
-        if (err || res.body.error) {
-          return done(err || (new Error(res.body.error)));
-        }
-        var results = res.body;
-
-        done();
-      });
-  });
-
-
 });
-
 
 

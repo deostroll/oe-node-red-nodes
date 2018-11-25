@@ -66,6 +66,7 @@
     "lodash": "4.17.10",
     "oe-node-red": "git+http://evgit/oec-next/oe-node-red.git#master",
     "oe-cloud": "git+http://evgit/oec-next/oe-cloud.git#master",
+    "oe-multi-tenancy": "git+http://evgit/oec-next/oe-multi-tenancy.git#master",
     "oe-connector-postgresql": "git+http://evgit/oec-next/oe-connector-postgresql.git#master",
     "mocha": "^3.4.2",
     "superagent-defaults": "^0.1.14",

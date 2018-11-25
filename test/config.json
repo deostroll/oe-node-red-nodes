@@ -20,5 +20,7 @@
     "handleErrors": false
   },
   "legacyExplorer": false,
-  "MultiTenancyModule" : "oe-multi-tenancy"
+  "MultiTenancyModule" : "oe-multi-tenancy",
+  "enableAuthCookie" : true,
+  "cookieSecret" : "XXXXX"
 }

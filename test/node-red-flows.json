@@ -1,0 +1,62 @@
+[
+    {
+        "id": "5b4e055c.3134cc",
+        "node": {
+            "id": "5b4e055c.3134cc",
+            "type": "tab",
+            "label": "node-red-test-tenant"
+        }
+    },
+    {
+        "id": "f2978c55.016ab",
+        "node": {
+            "id": "f2978c55.016ab",
+            "type": "async-observer",
+            "z": "5b4e055c.3134cc",
+            "name": "node-red-test-tenant",
+            "modelname": "Customer",
+            "method": "access",
+            "x": 162,
+            "y": 191,
+            "wires": [
+                [
+                    "f5c48f2.d0e007"
+                ]
+            ]
+        }
+    },
+    {
+        "id": "f5c48f2.d0e007",
+        "node": {
+            "id": "f5c48f2.d0e007",
+            "type": "function",
+            "z": "5b4e055c.3134cc",
+            "name": "node-red-test-tenant",
+            "func": "console.log('******* test-tenant ********');\nvar loopback = global.get('loopback');\nvar customerModel = loopback.findModel('Customer');\ncustomerModel.emit(\"notifyCustomer\", msg.callContext);\n\nreturn msg;",
+            "outputs": 1,
+            "noerr": 0,
+            "x": 439,
+            "y": 165,
+            "wires": [
+                [
+                    "9a0d6af6.7e8ec8"
+                ]
+            ]
+        }
+    },
+    {
+        "id": "9a0d6af6.7e8ec8",
+        "node": {
+            "id": "9a0d6af6.7e8ec8",
+            "type": "debug",
+            "z": "5b4e055c.3134cc",
+            "name": "node-red-test-tenant",
+            "active": true,
+            "console": "false",
+            "complete": "true",
+            "x": 661,
+            "y": 147,
+            "wires": []
+        }
+    }
+]

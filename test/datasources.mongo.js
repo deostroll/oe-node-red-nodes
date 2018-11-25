@@ -6,26 +6,26 @@
  */
 var mongoHost = process.env.MONGO_HOST || 'localhost';
 var dbName = process.env.DB_NAME || 'oe-node-red-nodes-test';
-module.exports = 
+module.exports =
 {
-  "memdb": {
-    "name": "memdb",
-    "connector": "memory"
+  'memdb': {
+    'name': 'memdb',
+    'connector': 'memory'
   },
-  "transient": {
-    "name": "transient",
-    "connector": "transient"
+  'transient': {
+    'name': 'transient',
+    'connector': 'transient'
   },
-  "db": {
-    "host": mongoHost,
-    "port": 27017,
-    "url": "mongodb://" + mongoHost + ":27017/" + dbName,
-    "database": dbName,
-    "password": "admin",
-    "name": "db",
-    "connector": "mongodb",
-    "user": "admin",
-    "connectionTimeout": 500000
+  'db': {
+    'host': mongoHost,
+    'port': 27017,
+    'url': 'mongodb://' + mongoHost + ':27017/' + dbName,
+    'database': dbName,
+    'password': 'admin',
+    'name': 'db',
+    'connector': 'mongodb',
+    'user': 'admin',
+    'connectionTimeout': 500000
   }
 };
 

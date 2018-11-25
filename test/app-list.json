@@ -4,6 +4,10 @@
     "enabled": true
   },
   {
+    "path": "oe-multi-tenancy",
+    "enabled": true
+  },  
+  {
     "path": "oe-node-red",
     "enabled": true
   },  

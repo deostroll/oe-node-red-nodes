@@ -75,7 +75,7 @@ function compareContext(_node, ctx) {
       if (!ctx.options || !ctx.options.ctx) {
         return false;
       }
-      if (_node.callContext.ctx[field] === 'default') {continue;}
+      if (_node.callContext.ctx[field] === '/default' || _node.callContext.ctx[field] === 'default' || _node.callContext.ctx[field] === '/default/') {continue;}
       if (ctx.options.ctx[field] !== _node.callContext.ctx[field]) {return false;}
     }
   }
