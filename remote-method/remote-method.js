@@ -5,64 +5,58 @@
  *
  */
 var loopback = require('loopback');
-var _ = require('lodash');
-var utils = require('../common/utils');
 
 module.exports = function (RED) {
-    function RemoteMethodNode(config) {
-        RED.nodes.createNode(this, config);
-        var node = this;
-        if (config.modelName) {
-            var Model = loopback.findModel(config.modelName, node.callContext);
-            if (Model && config.methodName) {
-                Model.remoteMethod(config.methodName, {
-                    accepts: [
-                        {arg: 'req', type: 'object', 'http': {source: 'req'}},
-                        {arg: 'res', type: 'object', 'http': {source: 'res'}} 
-                    ],
-                    returns : {type:'object', root:true},
-                    isStatic: config.isStatic,
-                    http: {path: config.url, verb: config.method}
-                });
-                if (config.isStatic) {
-                    // Generate different functions for isStatic true / false
-                    Model[config.methodName] = function(req, res, options, cb) {
-                        var msgid = RED.util.generateId();
-                        var model=this;
-                        node.send({_msgid:msgid,model:model,req:req,res:res,remoteMethodCallBack:cb});
-                    }
-                } else {
-                    Model.prototype[config.methodName] = function(req, res, options, cb) {
-                        var msgid = RED.util.generateId();
-                        var model=this.constructor;
-                        var instance=this;
-                        node.send({_msgid:msgid,model:model,instance:instance,req:req,res:res,remoteMethodCallBack:cb});
-                    }
-                }
-            }
+  function RemoteMethodNode(config) {
+    RED.nodes.createNode(this, config);
+    var node = this;
+    if (config.modelName) {
+      var Model = loopback.findModel(config.modelName, node.callContext);
+      if (Model && config.methodName) {
+        Model.remoteMethod(config.methodName, {
+          accepts: [
+            {arg: 'req', type: 'object', 'http': {source: 'req'}},
+            {arg: 'res', type: 'object', 'http': {source: 'res'}}
+          ],
+          returns: {type: 'object', root: true},
+          isStatic: config.isStatic,
+          http: {path: config.url, verb: config.method}
+        });
+        if (config.isStatic) {
+          // Generate different functions for isStatic true / false
+          Model[config.methodName] = function (req, res, options, cb) {
+            var msgid = RED.util.generateId();
+            var model = this;
+            node.send({_msgid: msgid, model: model, req: req, res: res, remoteMethodCallBack: cb});
+          };
+        } else {
+          Model.prototype[config.methodName] = function (req, res, options, cb) {
+            var msgid = RED.util.generateId();
+            var model = this.constructor;
+            var instance = this;
+            node.send({_msgid: msgid, model: model, instance: instance, req: req, res: res, remoteMethodCallBack: cb});
+          };
         }
-
-        var node = this;
-        node.on('input', function (msg) {
-        });
+      }
     }
+    node.on('input', function (msg) {
+    });
+  }
 
-    function RemoteMethodEnd(config) {
-        RED.nodes.createNode(this, config);
-        var node = this;
-        node.on('input', function (msg) {
-            if (msg.remoteMethodCallBack) {
-                msg.payload =  msg.payload || {};
-                msg.remoteMethodCallBack(null, msg.payload);
-            }
-            else {
-                 node.send(msg);
-            }
-        });
-    }
+  function RemoteMethodEnd(config) {
+    RED.nodes.createNode(this, config);
+    var node = this;
+    node.on('input', function (msg) {
+      if (msg.remoteMethodCallBack) {
+        msg.payload =  msg.payload || {};
+        msg.remoteMethodCallBack(null, msg.payload);
+      } else {
+        node.send(msg);
+      }
+    });
+  }
 
-    RED.nodes.registerType("remote-method", RemoteMethodNode);
+  RED.nodes.registerType('remote-method', RemoteMethodNode);
 
-    RED.nodes.registerType("remote-method-end", RemoteMethodEnd);
-
-}
+  RED.nodes.registerType('remote-method-end', RemoteMethodEnd);
+};
