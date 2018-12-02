@@ -31,7 +31,18 @@ module.exports = function (RED) {
         node.status({fill: 'red', shape: 'dot', text: 'ModelName not Set'});
         return  this.warn(RED._('createData.errors.modelNameNotSet'));
       }
-      dataStr = (config.data || config.data.trim() === '') ? msg.payload : config.data;
+      var msgPayload;
+      if (msg.payload) {
+        try {
+          msgPayload = JSON.parse(msg.payload);
+        } catch (exp) { msgPayload = false;}
+      }
+      if (msgPayload) {
+        dataStr = msg.payload;
+      } else {
+        dataStr = config.data;
+      }
+      // dataStr = (config.data || config.data.trim() === '') ? msg.payload : config.data;
       var data;
       try {
         data = (typeof dataStr === 'string') ? JSON.parse(dataStr) : dataStr;

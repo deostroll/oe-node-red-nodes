@@ -5,6 +5,7 @@
  *
  */
 var loopback = require('loopback');
+
 var utils = require('../common/utils');
 
 module.exports = function (RED) {

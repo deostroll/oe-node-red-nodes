@@ -203,12 +203,12 @@ module.exports = {
   // can be accessed in a function block as:
   //    context.global.os
 
-  functionGlobalContext: {
+  // functionGlobalContext: {
     // os:require('os'),
     // octalbonescript:require('octalbonescript'),
     // jfive:require("johnny-five"),
     // j5board:require("johnny-five").Board({repl:false})
-  }
+  //}
 
   // The following property can be used to order the categories in the editor
   // palette. If a node's category is not in the list, the category will get

@@ -130,8 +130,10 @@ var AsyncAfterRemote = function (node, modelName, methodName) {
       }
 
       msg.callContext = _node.callContext;
+      msg.req = ctx.req;
+      msg.res = ctx.res;
       // msg.next = next;
-      msg.ctx = ctx;
+      msg.ctx = ctx.req.callContext;
       _node.send(msg);
 
       // return control to loopback application.
