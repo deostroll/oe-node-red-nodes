@@ -96,7 +96,7 @@ var SyncObserver = function (node, modelName, methodName) {
       next();
     };
 
-
+debugger;
     _node.send(msg);
   };
 
