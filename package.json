@@ -1,6 +1,6 @@
 {
   "name": "oe-node-red-nodes",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Node-RED nodes for oeCloud based applications",
   "main": "node-red.js",
   "scripts": {
@@ -40,7 +40,8 @@
   "author": "Ajith Vasudevan",
   "license": "MIT",
   "dependencies": {
-    "async": "^2.5.0"
+    "async": "2.6.1",
+    "lodash": "4.17.11"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
