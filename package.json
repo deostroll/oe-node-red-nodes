@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://evgit/oec-next/oe-node-red-nodes.git"
+    "url": "http://evgit/oecloud.io/oe-node-red-nodes.git"
   },
   "keywords": [
     "node-red",
@@ -60,11 +60,11 @@
     "grunt-mocha-istanbul": "5.0.2",
     "grunt-mocha-test": "0.13.3",
     "istanbul": "0.4.5",
-    "oe-node-red": "git+http://evgit/oec-next/oe-node-red.git#master",
-    "oe-cloud": "git+http://evgit/oec-next/oe-cloud.git#master",
-    "oe-multi-tenancy": "git+http://evgit/oec-next/oe-multi-tenancy.git#master",
+    "oe-node-red": "git+http://evgit/oecloud.io/oe-node-red.git#master",
+    "oe-cloud": "git+http://evgit/oecloud.io/oe-cloud.git#master",
+    "oe-multi-tenancy": "git+http://evgit/oecloud.io/oe-multi-tenancy.git#master",
     "loopback-connector-mongodb": "3.9.2",
-    "oe-connector-postgresql": "git+http://evgit/oec-next/oe-connector-postgresql.git#master",
+    "oe-connector-postgresql": "git+http://evgit/oecloud.io/oe-connector-postgresql.git#master",
     "mocha": "5.2.0",
     "superagent-defaults": "0.1.14",
     "supertest": "3.4.2"
