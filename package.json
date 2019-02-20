@@ -8,7 +8,8 @@
     "test": "mocha test/test.js",
     "lint": "eslint .",
     "fix-lint": "eslint --fix .",
-    "grunt-cover": "grunt test-with-coverage"
+    "grunt-cover": "grunt test-with-coverage",
+    "postinstall": "node postinstall.js"
   },
   "repository": {
     "type": "git",
