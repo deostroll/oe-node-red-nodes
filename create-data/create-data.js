@@ -34,7 +34,7 @@ module.exports = function (RED) {
       var msgPayload;
       if (msg.payload) {
         try {
-          msgPayload = JSON.parse(msg.payload);
+          msgPayload = (typeof msg.payload === 'string') ? JSON.parse(msg.payload) : msg.payload;
         } catch (exp) { msgPayload = false;}
       }
       if (msgPayload) {
