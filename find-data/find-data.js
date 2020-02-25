@@ -73,11 +73,11 @@ module.exports = function (RED) {
               'text': 'Found ' + response.length + ' records'
             });
             msg.resultModelName = modelName;
-            response.forEach(function (instance, index) {
-              if (instance instanceof Model) {
-                response[index] = response[index].toObject();
-              }
-            });
+            // response.forEach(function (instance, index) {
+            //   if (instance instanceof Model) {
+            //     response[index] = response[index].toObject();
+            //   }
+            // });
             msg.payload = response;
             node.send([msg, null]);
           }
