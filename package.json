@@ -1,6 +1,6 @@
 {
   "name": "oe-node-red-nodes",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Node-RED nodes for oeCloud based applications",
   "main": "node-red.js",
   "scripts": {
