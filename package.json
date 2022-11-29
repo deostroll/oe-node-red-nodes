@@ -61,7 +61,7 @@
     "oe-connector-oracle": "^2.0.0",
     "oe-connector-postgresql": "^2.0.0",
     "oe-multi-tenancy": "^2.0.0",
-    "oe-node-red": "^2.0.0",
+    "oe-node-red": "github:deostroll/oe-node-red#dev",
     "superagent-defaults": "0.1.14",
     "supertest": "3.4.2"
   }
